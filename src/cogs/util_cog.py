@@ -2,6 +2,8 @@ import discord
 from discord.ext import commands
 from src.alias import get_aliases
 from src.logger import log_console
+from src.text import get_text
+from src.util import delayed_message
 
 class Util(commands.Cog):
     def __init__(self, client):
@@ -14,6 +16,17 @@ class Util(commands.Cog):
     @commands.command(aliases=get_aliases('ping'))
     async def ping(self, ctx):
         await ctx.send(f'Latency: {round(client.latency * 1000)}ms')
+
+    @commands.command(aliases=get_aliases('clear'))
+    @commands.has_permissions(manage_messages=True)
+    async def clear(self, ctx, amount=5):
+        await ctx.channel.purge(limit = amount)
+        await delayed_message(ctx, get_text("message_cleared").format(amount), 3)
+
+    @clear.error
+    async def clear_error(self, ctx, error):
+        if(isinstance(error, commands.MissingPermissions)):
+            await ctx.send(get_text("unsufficient_permissions"))
 
 def setup(client):
     client.add_cog(Util(client))

@@ -1,0 +1,8 @@
+{
+    "user_banned" : "",
+    "user_kicked" : "asd",
+    "user_pardon" : "{}#{} was pardoned",
+    "message_cleared" : "{} messages cleared :kissing_heart:",
+    "command_not_found_error": "Command was not found :thinking:",
+    "unsufficient_permissions": "You do not have sufficient permissions to execute this command."
+}

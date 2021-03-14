@@ -23,8 +23,8 @@ def log_console(message, log_level = 1):
 def log(message):
     logger.debug(message)
 
-def log_error(message):
-    logger.error(message)
-
 def log_warning(message):
     logger.warn(message)
+    
+def log_error(message):
+    logger.error(message)
