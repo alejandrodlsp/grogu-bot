@@ -47,7 +47,7 @@ To set up a copy of the client locally, you will need to generate a discord bot 
 You can clone the repository using: 
 
 ```shell
-https://github.com/alejandrodlsp/razer-bot.git
+get clone https://github.com/alejandrodlsp/razer-bot.git
 ```
 
 To activate the python virtual environment, you will need to have the venv package installed. You can install this using pip3:
