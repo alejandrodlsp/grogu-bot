@@ -2,8 +2,7 @@
 ### Open source discord bot made using *discord.py*
 
 <hr/>
-<br><br>
-<br><br>
+<br>
 <br>
 
 ## Support
