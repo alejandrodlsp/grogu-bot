@@ -5,10 +5,12 @@
     "message_cleared" : "{} messages cleared :kissing_heart:",
     "command_not_found_error" : "Command was not found :thinking:",
     "unsufficient_permissions" : "You do not have sufficient permissions to execute this command.",
+    
     "music_channel_on_connect" : "Connected to **{}** channel.",
     "music_channel_on_disconnect" : "Disconnected from voice channel",
     "music_already_connected_to_channel_error" : "Bot is already connected to a voice channel.",
     "music_queue_is_empty_error" : "Que is empty!",
     "music_no_voice_channel_error" : "No suitable voice channel was provided.",
+    "music_no_available_on_dm_error" : "Music commands are not available in DMs",
     "music_added_single_track_to_queue" : "Added {} to the queue."
 }

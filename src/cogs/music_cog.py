@@ -1,5 +1,5 @@
+import os
 import re
-import asyncio
 import typing as t
 import datetime as dt
 
@@ -7,152 +7,39 @@ import discord
 import wavelink
 
 from discord.ext import commands
-from src.embeds.music.choose_track_embed import ChooseTrackEmbed, ChooseTrackOptions
+
+from src.cogs.helpers.music.player import Player
+from src.embeds.music.queue_emved import QueueEmbed
+
 from src.alias import get_aliases
 from src.logger import log_console
 from src.text import get_text
 
 URL_REGEX = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
-
-class AlreadyConnectedToChannel(commands.CommandError):
-    pass
-
-class NoVoiceChannel(commands.CommandError):
-    pass
-
-class QueueIsEmpty(commands.CommandError):
-    pass
-
-class NoTracksFound(commands.CommandError):
-    pass
-
-class Queue:
-    def __init__(self):
-        self._queue = []
-        self.position = 0
-
-    def add(self, *args):
-        self._queue.extend(args)
-
-    @property
-    def is_empty(self):
-        return not self._queue
-        
-    @property
-    def first_track(self):
-        if not self._queue:
-            raise QueueIsEmpty
-        return self._queue[0]
-
-    @property
-    def current_track(self):
-        if not self._queue:
-            raise QueueIsEmpty
-        return self._queue[self.position]
-
-    @property
-    def upcoming(self):
-        if not self._queue:
-            raise QueueIsEmpty
-        return self._queue[self.position + 1:] 
-
-    @property
-    def history(self):
-        if not self._queue:
-            raise QueueIsEmpty
-        return self._queue[:self.position]
-
-    @property
-    def length(self):
-        return len(self._queue)
-
-    def empty(self):
-        self._queue.clear()
-        self.position = 0
-
-    def get_next_track(self):
-        if not self._queue:
-            raise QueueIsEmpty
-        self.position += 1
-
-        if self.position > len(self._queue) - 1:
-            return None
-
-        return self._queue[self.position]
-
-
-class Player(wavelink.Player):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.queue = Queue()
-
-    async def connect(self, ctx, channel = None):
-        if self.is_connected:
-            raise AlreadyConnectedToChannel
-
-        if (channel := getattr(ctx.author.voice, "channel", channel)) is None:
-            raise NoVoiceChannel
-
-        await super().connect(channel.id)
-        return channel
-
-    async def teardown(self):
-        try:
-            await self.destroy()
-        except KeyError:
-            pass
-
-    async def add_tracks(self, ctx, tracks):
-        if not tracks:
-            raise NoTracksFound
-
-        if isinstance(tracks, wavelink.TrackPlaylist):
-            self.queue.add(*tracks.tracks)
-        elif len(tracks) == 1:
-            self.queue.add(tracks[0])
-            await ctx.send(get_text('music_added_single_track_to_queue').format(tracks[0].title))
-        else:
-            if (track := await self.choose_track(ctx, tracks)) is not None:
-                self.queue.add(track)
-                await ctx.send(get_text('music_added_single_track_to_queue').format(tracks[0].title))
-        if not self.is_playing:
-            await self.start_playback()
-    
-    async def choose_track(self, ctx, tracks):
-        def _check(r, u):
-            return (
-                r.emoji in ChooseTrackOptions.keys()
-                and u == ctx.author
-                and r.message.id == msg.id
-            )
-
-        embed = ChooseTrackEmbed(ctx,tracks)
-        msg = await embed.send()
-
-        try:
-            reaction, _ = await self.bot.wait_for("reaction_add", timeout=60.0, check=_check)
-        except asyncio.TimeoutError:
-            await msg.delete()
-            await ctx.message.delete()
-        else:
-            await msg.delete()
-            return tracks[ChooseTrackOptions[reaction.emoji]]
-
-    async def start_playback(self):
-        await self.play(self.queue.first_track)
-
-    async def advance(self):
-        try:
-            if (track := self.queue.get_next_track()) is not None:
-                await self.play(track)
-        except QueueIsEmpty:
-            pass
  
 class Music(commands.Cog, wavelink.WavelinkMixin):
     def __init__(self, bot):
         self.bot = bot
         self.wavelink = wavelink.Client(bot=bot)
         self.bot.loop.create_task(self.start_nodes())
+
+    async def start_nodes(self):
+        await self.bot.wait_until_ready()
+        node = {
+            "host": os.getenv("LAVALINK_SERVER_ADDRESS"),
+            "port": os.getenv("LAVALINK_SERVER_PORT"),
+            "rest_uri": f"http://{os.getenv("LAVALINK_SERVER_ADDRESS")}:{os.getenv("LAVALINK_SERVER_PORT")}",
+            "password": os.getenv("LAVALINK_SERVER_PASSWORD"),
+            "identifier": "MAIN",
+            "region": os.getenv("LAVALINK_SERVER_REGION")
+        }
+        await self.wavelink.initiate_node(**node)
+
+    def get_player(self, obj):
+        if isinstance(obj, commands.Context):
+            return self.wavelink.get_player(obj.guild.id, cls=Player, context=obj)
+        elif isinstance(obj, discord.Guild):
+            return self.wavelink.get_player(obj.id, cls=Player)
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -176,32 +63,9 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
 
     async def cog_check(self, ctx):
         if isinstance(ctx.channel, discord.DMChannel):
-            await ctx.send('Music commands are not available in DMs')
+            await ctx.send(get_text("music_no_available_on_dm_error"))
             return False
         return True
-
-    async def start_nodes(self):
-        await self.bot.wait_until_ready()
-
-        nodes = {
-            'MAIN': {
-                "host": "127.0.0.1",
-                "port": 2333,
-                "rest_uri": "http://127.0.0.1:2333",
-                "password": "youshallnotpass",
-                "identifier": "MAIN",
-                "region": "europe",
-            }
-        }
-
-        for node in nodes.values():
-            await self.wavelink.initiate_node(**node)
-
-    def get_player(self, obj):
-        if isinstance(obj, commands.Context):
-            return self.wavelink.get_player(obj.guild.id, cls=Player, context=obj)
-        elif isinstance(obj, discord.Guild):
-            return self.wavelink.get_player(obj.id, cls=Player)
 
     @commands.command(name='connect', aliases=get_aliases('connect'))
     async def connect_command(self, ctx, *, channel: t.Optional[discord.VoiceChannel]):
@@ -221,24 +85,9 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
         player = self.get_player(ctx)
         if player.queue.is_empty:
             raise QueueIsEmpty
-
-        embed = discord.Embed(
-            title = 'Queue',
-            description= f'Showing up to next {show} tracks',
-            colour = ctx.author.colour,
-            timestamp = dt.datetime.utcnow()
-        )
-        embed.set_author(name="Query Results")
-        embed.set_footer(text=f"Requeste by {ctx.author.display_name}", icon_url = ctx.author.avatar.url)
-        embed.add_field(name="Currently playing", value = player.queue.current_track.title, inline=False)
-        
-        if upcoming := player.queue.upcoming:
-            embed.add_field(
-                name="Next up",
-                value = "\n".join(t.title for t in upcoming[:show]),
-                inline = False
-            )
-        msg = await ctx.send(embed=embed)
+            
+        embed = QueueEmbed(ctx, player.queue, show)
+        msg = await embed.send()
 
     @queue_command.error
     async def queue_command_error(self, ctx, error):
