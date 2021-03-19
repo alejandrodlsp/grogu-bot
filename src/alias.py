@@ -1,8 +1,14 @@
 aliases = {
     'ping' : [ 'latency', 'ms' ],
     'clear' : [ 'clean', 'purge' ],
-    'kick' : [ 'a' ],
-    'changeprefix' : [ 'prefix', 'change_prefix' ]
+    'kick' : [],
+    'ban' : [],
+    'unban' : [],
+    'changeprefix' : [ 'prefix', 'change_prefix' ],
+    'connect' : [ 'c' ],
+    'queue' : [ 'q' ],
+    'disconnect' : [ 'dc' ],
+    'play' : [ 'p' ]
 }
 
 def get_aliases(command):
