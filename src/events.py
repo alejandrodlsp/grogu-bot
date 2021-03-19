@@ -5,6 +5,9 @@ from src.text import get_text
 from src.logger import log, log_console
 from src.client import client
 from src.prefix import create_prefix_entry, remove_prefix_entry
+
+log_console("Registering events...")
+
 @client.event
 async def on_ready():
     log('Bot serving in as {0.user}'.format(client))

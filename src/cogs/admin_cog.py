@@ -13,35 +13,41 @@ class Admin(commands.Cog):
     async def on_ready(self):
         log_console(f'\tLoaded Admin cog')
 
-    @commands.command(aliases=get_aliases('kick'))
+    @commands.command(name='kick', aliases=get_aliases('kick'))
     @commands.has_permissions(kick_members=True)
-    async def kick(self, ctx, member : discord.Member, *, reason=None):
-        log(f'User kick: {ctx.author.name}#{ctx.author.id} kicked {member.name}#{member.id} in {ctx.guild} for reason: {reason}')
-        await member.kick(reason=reason)
+    async def kick_command(self, ctx, member : discord.Member, *, reason=None):
+        member_name, member_discriminator = member.split('#')
 
-    @kick.error
-    async def kick_error(self, ctx, error):
+        log(f'User kick: {ctx.author.name}#{ctx.author.id} kicked {member_name}#{member_discriminator} in {ctx.guild} for reason: {reason}')
+        await member.kick(reason=reason)
+        await ctx.send(get_text("user_kick").format(member_name, member_discriminator))
+
+    @kick_command.error
+    async def kick_command_error(self, ctx, error):
         if(isinstance(error, commands.MissingRequiredArgument)):
             await ctx.send("Missing arguments: .kick *user*")
         if(isinstance(error, commands.MissingPermissions)):
             await ctx.send(get_text("unsufficient_permissions"))
 
-    @commands.command(aliases=get_aliases('ban'))
+    @commands.command(name='ban', aliases=get_aliases('ban'))
     @commands.has_permissions(ban_members=True)
-    async def ban(self, ctx, member : discord.Member, *, reason=None):
-        log(f'User ban: {ctx.author.name}#{ctx.author.id} banned {member.name}#{member.id} in {ctx.guild} for reason: {reason}')
-        await member.ban(reason=reason)
+    async def ban_command(self, ctx, member : discord.Member, *, reason=None):
+        member_name, member_discriminator = member.split('#')
 
-    @ban.error
-    async def ban_error(self, ctx, error):
+        log(f'User ban: {ctx.author.name}#{ctx.author.id} banned {member_name}#{member_discriminator} in {ctx.guild} for reason: {reason}')
+        await member.ban(reason=reason)
+        await ctx.send(get_text("user_ban").format(member_name, member_discriminator))
+
+    @ban_command.error
+    async def ban_command_error(self, ctx, error):
         if(isinstance(error, commands.MissingRequiredArgument)):
             await ctx.send("Missing arguments: .ban *user*")
         if(isinstance(error, commands.MissingPermissions)):
             await ctx.send(get_text("unsufficient_permissions"))
 
-    @commands.command(aliases=get_aliases('unban'))
+    @commands.command(name='unban', aliases=get_aliases('unban'))
     @commands.has_permissions(administrator=True)
-    async def unban(self, ctx, *, member):
+    async def unban_command(self, ctx, *, member):
         banned_users = await ctx.guild.bans()
         member_name, member_discriminator = member.split('#')
 
@@ -52,20 +58,20 @@ class Admin(commands.Cog):
                 await ctx.send(get_text("user_pardon").format(member_name, member_discriminator))
                 log(f'User pardon: {ctx.author.name}#{ctx.author.id} unbaned {member_name}#{member_discriminator} in {ctx.guild}')
 
-    @unban.error
-    async def unban_error(self, ctx, error):
+    @unban_command.error
+    async def unban_command_error(self, ctx, error):
         if(isinstance(error, commands.MissingRequiredArgument)):
             await ctx.send("Missing arguments: .unban *user*")
         if(isinstance(error, commands.MissingPermissions)):
             await ctx.send(get_text("unsufficient_permissions"))
 
-    @commands.command(aliases=get_aliases('changeprefix'))
+    @commands.command(name='changeprefix', aliases=get_aliases('changeprefix'))
     @commands.has_permissions(administrator=True)
-    async def changeprefix(self, ctx, prefix):
+    async def changeprefix_command(self, ctx, prefix):
         change_prefix(ctx, prefix)
 
-    @changeprefix.error
-    async def changeprefix_error(self, ctx, error):
+    @changeprefix_command.error
+    async def changeprefix_command_error(self, ctx, error):
         if(isinstance(error, commands.MissingRequiredArgument)):
             await ctx.send("Missing arguments: .changeprefix *prefix*")
         if(isinstance(error, commands.MissingPermissions)):

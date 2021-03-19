@@ -1,3 +1,4 @@
+import os
 import discord
 import logging
 import datetime
@@ -11,15 +12,25 @@ logger.addHandler(handler)
 
 def log_console(message, log_level = 1):
     timestamp = '{:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
-    print(f'{timestamp}> {message}')
 
     if log_level == 1:
-        log(message)
+        color_code = '\u001b[37m'
+        info(message)
     elif log_level == 2:
-        log_warning(message)
+        color_code = '\u001b[36m'
+        log(message)
     elif log_level == 3:
+        color_code = '\u001b[33m'
+        log_warning(message)
+    elif log_level == 4:
+        color_code = '\u001b[33m'
         log_error(message)
 
+    print(f'{color_code[0]}{timestamp}> {message}\u001b[0m')
+
+def info(message):
+    logger.info(message)
+    
 def log(message):
     logger.debug(message)
 
