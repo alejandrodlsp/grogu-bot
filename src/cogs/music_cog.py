@@ -21,6 +21,12 @@ URL_REGEX = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^
 class PlayerIsAlreadyPaused(commands.CommandError):
     pass
 
+class NoMoreTracksError(commands.CommandError):
+    pass
+
+class NoPreviousTrackError(commands.CommandError):
+    pass
+
 class Music(commands.Cog, wavelink.WavelinkMixin):
     def __init__(self, bot):
         self.bot = bot
@@ -165,5 +171,38 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
         await player.stop()
         await ctx.send(get_text('music_on_stop'))
 
+    @commands.command(name='skip', aliases=get_aliases('skip'))
+    async def skip_command(self, ctx):
+        player = self.get_player(ctx)
+
+        if not player.queue.upcoming:
+            raise NoMoreTracksError
+        await player.stop()
+        await ctx.send(get_text('music_on_skip'))
+
+    @skip_command.error
+    async def skip_command_error(self, ctx, error):
+        if isinstance(error, QueueIsEmptyError):
+            await ctx.send(get_text('music_queue_is_empty_error'))
+        elif isinstance(error, NoMoreTracksError):
+            await ctx.send(get_text('music_no_more_tracks_error'))
+
+    @commands.command(name='previous', aliases=get_aliases('previous'))
+    async def previous_command(self, ctx):
+        player = self.get_player(ctx)
+        
+        if not player.queue.history:
+            raise NoPreviousTrackError
+        
+        player.queue.position -= 2
+        await player.stop()
+        await ctx.send(get_text('music_on_previous'))
+
+    @previous_command.error
+    async def previous_command_error(self, ctx, error):
+        if isinstance(error, NoPreviousTrackError)
+            await ctx.send(get_text('music_no_previous_track_error'))
+
+            
 def setup(client):
     client.add_cog(Music(client))
