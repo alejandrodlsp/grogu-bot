@@ -2,8 +2,10 @@ import asyncio
 import discord
 import wavelink
 
+from discord.ext import commands
+
 from src.embeds.music.choose_track_embed import ChooseTrackEmbed, ChooseTrackOptions
-from src.cogs.helpers.music.queue import Queue, QueueIsEmptyError
+from src.helpers.music.queue import Queue, QueueIsEmptyError
 from src.text import get_text
 
 class AlreadyConnectedToChannelError(commands.CommandError):
@@ -79,5 +81,5 @@ class Player(wavelink.Player):
         try:
             if (track := self.queue.get_next_track()) is not None:
                 await self.play(track)
-        except QueueIsEmpty:
+        except QueueIsEmptyError:
             pass

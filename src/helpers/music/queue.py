@@ -1,3 +1,5 @@
+from discord.ext import commands
+
 class QueueIsEmptyError(commands.CommandError):
     pass
 

@@ -8,8 +8,8 @@ import wavelink
 
 from discord.ext import commands
 
-from src.cogs.helpers.music.player import Player
-from src.embeds.music.queue_emved import QueueEmbed
+from src.helpers.music.player import Player
+from src.embeds.music.queue_embed import QueueEmbed
 
 from src.alias import get_aliases
 from src.logger import log_console
@@ -28,7 +28,7 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
         node = {
             "host": os.getenv("LAVALINK_SERVER_ADDRESS"),
             "port": os.getenv("LAVALINK_SERVER_PORT"),
-            "rest_uri": f"http://{os.getenv("LAVALINK_SERVER_ADDRESS")}:{os.getenv("LAVALINK_SERVER_PORT")}",
+            "rest_uri": f'http://{os.getenv("LAVALINK_SERVER_ADDRESS")}:{os.getenv("LAVALINK_SERVER_PORT")}',
             "password": os.getenv("LAVALINK_SERVER_PASSWORD"),
             "identifier": "MAIN",
             "region": os.getenv("LAVALINK_SERVER_REGION")

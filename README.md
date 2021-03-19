@@ -55,17 +55,29 @@ To activate the python virtual environment, you will need to have the venv packa
 pip3 install venv
 ```
 
-You can then activate the virtual environment using
-```shell
-source env/bin/activate
-```
-on mac and linux.
-
 You will need to create a **.env** file containing all environment variables. You can find an example **.env** file in the **.env.example** file. Alternativelly, you can run the 
 **setup.sh** script to generate the environment file.
 
 You will need to populate the .env file with your discord private token, as well as any other environment variables.
 
+To run the bot, first you will need to run the **audio server**, to do this you will need to have Java 11+ installed on your machine (Java 11 recommended), and run:
+
+```shell
+java -jar audio_server/Lavalink.jar
+```
+
+You can then activate the virtual environment using
+
+```shell
+source env/bin/activate
+```
+on mac and linux.
+
+Finally, to run the bot client:
+
+```shell
+python3 bot.py
+```
 <hr/>
 
 ## Contributing 
