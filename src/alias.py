@@ -8,7 +8,9 @@ aliases = {
     'connect' : [ 'c' ],
     'queue' : [ 'q' ],
     'disconnect' : [ 'dc' ],
-    'play' : [ 'p' ]
+    'play' : [ 'p' ],
+    'pause' : [],
+    'resume' : []
 }
 
 def get_aliases(command):

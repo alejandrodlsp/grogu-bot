@@ -8,6 +8,7 @@ import wavelink
 
 from discord.ext import commands
 
+from src.helpers.music.queue import QueueIsEmptyError
 from src.helpers.music.player import Player
 from src.embeds.music.queue_embed import QueueEmbed
 
@@ -17,6 +18,9 @@ from src.text import get_text
 
 URL_REGEX = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
  
+class PlayerIsAlreadyPaused(commands.CommandError):
+    pass
+
 class Music(commands.Cog, wavelink.WavelinkMixin):
     def __init__(self, bot):
         self.bot = bot
@@ -85,7 +89,7 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
         player = self.get_player(ctx)
         if player.queue.is_empty:
             raise QueueIsEmpty
-            
+
         embed = QueueEmbed(ctx, player.queue, show)
         msg = await embed.send()
 
@@ -112,7 +116,11 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
             await player.connect(ctx)
         
         if query is None:
-            pass
+            if player.queue.is_empty:
+                raise QueueIsEmptyError
+            await player.set_pause(False)
+            if player.is_paused:
+                await ctx.send(get_text('music_on_resume'))
 
         else:
             query = query.strip("<>")
@@ -121,6 +129,41 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
 
             await player.add_tracks(ctx, await self.wavelink.get_tracks(query))
 
+    @play_command.error
+    async def play_command_error(self, ctx, error):
+        if isinstance(error, QueueIsEmptyError)
+            ctx.send(get_text('music_queue_is_empty_error'))
+
+    @commands.command(name='pause', aliases=get_aliases('pause'))
+    async def pause_command(self, ctx):
+        player = self.get_player(ctx)
+
+        if player.is_paused:
+            raise PlayerIsAlreadyPaused
+        await player.set_pause(True)
+        await ctx.send(get_text('music_on_pause'))
+
+    @pause_command.error
+    async def pause_command_error(self, ctx, error):
+        if isinstance(error, PlayerIsAlreadyPaused):
+            await ctx.send(get_text('music_player_already_paused_error'))
+
+    @commands.command(name='resume', aliases=get_aliases('resume'))
+    async def resume_command(self, ctx):
+        player = self.get_player(ctx)
+
+        if player.is_paused:
+            if player.queue.is_empty:
+                raise QueueIsEmptyError
+            await player.set_pause(False)
+            await ctx.send(get_text('music_on_resume'))
+
+    @commands.command(name='stop', aliases=get_aliases('stop'))
+    async def stop_command(self, ctx):
+        player = self.get_player(ctx)
+        player.queue.empty()
+        await player.stop()
+        await ctx.send(get_text('music_on_stop'))
 
 def setup(client):
     client.add_cog(Music(client))
