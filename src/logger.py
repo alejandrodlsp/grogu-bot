@@ -1,14 +1,14 @@
 import os
 import discord
-import logging
+#import logging
 import datetime
 
-logger = logging.getLogger('discord')
+#logger = logging.getLogger('discord')
 
-logger.setLevel(logging.DEBUG)
-handler = logging.FileHandler(filename='log/discord.log', encoding='utf-8', mode='w')
-handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
-logger.addHandler(handler)
+#logger.setLevel(logging.DEBUG)
+#handler = logging.FileHandler(filename='log/discord.log', encoding='utf-8', mode='w')
+#handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+#logger.addHandler(handler)
 
 def log_console(message, log_level = 1):
     timestamp = '{:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
@@ -29,13 +29,17 @@ def log_console(message, log_level = 1):
     print(f'{color_code[0]}{timestamp}> {message}\u001b[0m')
 
 def info(message):
-    logger.info(message)
+    #logger.info(message)
+    pass
     
 def log(message):
-    logger.debug(message)
+    #logger.debug(message)
+    pass
 
 def log_warning(message):
-    logger.warn(message)
-    
+    #logger.warn(message)
+    pass
+
 def log_error(message):
-    logger.error(message)
+    #logger.error(message) 
+    pass
