@@ -2,17 +2,18 @@ import os
 import json
 
 PREFIXES_FILE_PATH = 'db/prefixes.json'
-COMMAND_PREFIX = os.getenv("COMMAND_PREFIX")
 
 def get_prefix(client, message):
     with open(PREFIXES_FILE_PATH, 'r') as f:
         prefixes = json.load(f)
-    return prefixes[str(message.guild.id)]
+    if (prefix := prefixes[str(message.guild.id)]) is None:
+        create_prefix_entry(client.guild)
+    return prefix
 
 def create_prefix_entry(guild):
     with open(PREFIXES_FILE_PATH, 'r') as f:
         prefixes = json.load(f)
-    prefixes[str(guild.id)] = COMMAND_PREFIX
+    prefixes[str(guild.id)] = os.getenv("COMMAND_PREFIX")
     with open(PREFIXES_FILE_PATH, 'w') as f:
         json.dump(prefixes, f, indent = 4)
 

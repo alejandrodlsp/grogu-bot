@@ -21,9 +21,9 @@ class QueueEmbed:
             text=EMBED_FOOTER.format(ctx.author.display_name), 
             icon_url=ctx.author.avatar_url
             )
-        self.embed.add_field(name=CURRENTLY_PLAYING_TAG, value = player.queue.current_track.title, inline=False)
+        self.embed.add_field(name=CURRENTLY_PLAYING_TAG, value = queue.current_track.title, inline=False)
         if upcoming := queue.upcoming:
-            embed.add_field(
+            self.embed.add_field(
                 name= NEXT_UP_COLUMN,
                 value = "\n".join(t.title for t in upcoming[:show]),
                 inline = False

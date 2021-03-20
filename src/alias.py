@@ -12,7 +12,8 @@ aliases = {
     'pause' : [],
     'resume' : [ 'r' ],
     'skip' : [ 'next', 'fs', 's' ],
-    'previous' : [ 'rewind', 'rw' ]
+    'previous' : [ 'rewind', 'rw' ],
+    'shuffle' : [ 'sf', 'sh' ]
 }
 
 def get_aliases(command):

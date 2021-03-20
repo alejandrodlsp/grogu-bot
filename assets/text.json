@@ -21,5 +21,6 @@
     "music_on_resume" : "Music Resumed :play_pause:",
     "music_on_stop" : "Music Stopped :octagonal_sign:",
     "music_on_skip" : "Playing next track in queue :track_next: ",
-    "music_on_previous" : "No previous track in queue :rewind:"
+    "music_on_previous" : "No previous track in queue :rewind:",
+    "music_on_shuffle" : "Shuffling queue :twisted_rightwards_arrows:"
 }

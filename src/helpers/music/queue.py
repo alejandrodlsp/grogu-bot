@@ -1,4 +1,5 @@
 from discord.ext import commands
+import random
 
 class QueueIsEmptyError(commands.CommandError):
     pass
@@ -56,3 +57,12 @@ class Queue:
             return None
 
         return self._queue[self.position]
+
+    def shuffle(self):
+        if not self._queue:
+            raise QueueIsEmptyError
+        
+        upcoming = self.upcoming
+        random.shuffle(upcoming)
+        self._queue = self._queue[:self.position + 1]
+        self._queue.extend(upcoming)

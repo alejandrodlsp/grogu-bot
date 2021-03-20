@@ -137,8 +137,8 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
 
     @play_command.error
     async def play_command_error(self, ctx, error):
-        if isinstance(error, QueueIsEmptyError)
-            ctx.send(get_text('music_queue_is_empty_error'))
+        if isinstance(error, QueueIsEmptyError):
+            await ctx.send(get_text('music_queue_is_empty_error'))
 
     @commands.command(name='pause', aliases=get_aliases('pause'))
     async def pause_command(self, ctx):
@@ -194,15 +194,26 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
         if not player.queue.history:
             raise NoPreviousTrackError
         
-        player.queue.position -= 2
+        player.queue.position -= 2 if player.queue.position >= 1 else 0
+
         await player.stop()
         await ctx.send(get_text('music_on_previous'))
 
     @previous_command.error
     async def previous_command_error(self, ctx, error):
-        if isinstance(error, NoPreviousTrackError)
+        if isinstance(error, NoPreviousTrackError):
             await ctx.send(get_text('music_no_previous_track_error'))
 
-            
+    @commands.command(name='shuffle', aliases=get_aliases('shuffle'))
+    async def shuffle_command(self, ctx):
+        player = self.get_player(ctx)
+        player.queue.shuffle
+        await ctx.send(get_text('music_on_shuffle'))
+
+    @shuffle_command.error
+    async def shuffle_command_error(self, ctx, error):
+        if isinstance(error, QueueIsEmptyError):
+            await ctx.send(get_text('music_queue_is_empty_error'))
+
 def setup(client):
     client.add_cog(Music(client))
