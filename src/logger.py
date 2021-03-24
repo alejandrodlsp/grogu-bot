@@ -3,7 +3,6 @@ import discord
 import logging
 import datetime
 
-import os
 try:
     os.makedirs('log')
     file = open('log/discord.log','a+')
