@@ -22,7 +22,8 @@ class QueueEmbed:
             icon_url=ctx.author.avatar_url
             )
         self.embed.add_field(name=CURRENTLY_PLAYING_TAG, value = queue.current_track.title, inline=False)
-        if upcoming := queue.upcoming:
+        upcoming = queue.upcoming
+        if upcoming:
             self.embed.add_field(
                 name= NEXT_UP_COLUMN,
                 value = "\n".join(t.title for t in upcoming[:show]),
