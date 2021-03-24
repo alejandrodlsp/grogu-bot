@@ -3,6 +3,15 @@ import discord
 import logging
 import datetime
 
+import os
+try:
+    os.makedirs('log')
+    file = open('log/discord.log','a+')
+    file.close()
+except OSError as e:
+    if e.errno != errno.EEXIST:
+        raise
+
 logger = logging.getLogger('discord')
 
 logger.setLevel(logging.DEBUG)
