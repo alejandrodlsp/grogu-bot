@@ -1,5 +1,7 @@
 *.env
 *.log
+*.idea
+.idea/
 /log
 log/
 __pycache__/
