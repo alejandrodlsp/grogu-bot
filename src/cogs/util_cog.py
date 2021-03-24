@@ -3,7 +3,7 @@ from discord.ext import commands
 from src.alias import get_aliases
 from src.logger import log_console
 from src.text import get_text
-from src.util import delayed_message
+from src.util import delayed_message, send_msg
 
 class Util(commands.Cog):
     def __init__(self, client):
@@ -22,11 +22,11 @@ class Util(commands.Cog):
     async def clear_command(self, ctx, amount=5):
         await ctx.channel.purge(limit = amount)
         await delayed_message(ctx, get_text("message_cleared").format(amount), 3)
-
+        
     @clear_command.error
     async def clear_command_error(self, ctx, error):
         if(isinstance(error, commands.MissingPermissions)):
-            await ctx.send(get_text("unsufficient_permissions"))
+            await send_msg(ctx, 'unsufficient_permissions')
 
 def setup(client):
     client.add_cog(Util(client))

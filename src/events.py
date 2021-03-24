@@ -1,7 +1,7 @@
 import os
 import discord
 from discord.ext import commands
-from src.text import get_text
+from src.util import send_msg
 from src.logger import log, log_console
 from src.client import client
 from src.prefix import create_prefix_entry, remove_prefix_entry
@@ -27,7 +27,7 @@ async def on_member_remove(member):
 @client.event
 async def on_command_error(ctx, error):
     if(isinstance(error, commands.CommandNotFound)):
-        await ctx.send(get_text("command_not_found_error"))
+        await send_msg(ctx, 'command_not_found_error')
 
 @client.event
 async def on_guild_join(guild):

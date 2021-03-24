@@ -1,4 +1,4 @@
 @echo off
 cd ../..
-python bot.py
+python -B bot.py
 exit

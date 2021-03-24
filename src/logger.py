@@ -14,19 +14,15 @@ def log_console(message, log_level = 1):
     timestamp = '{:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
 
     if log_level == 1:
-        color_code = '\u001b[37m'
         info(message)
     elif log_level == 2:
-        color_code = '\u001b[36m'
         log(message)
     elif log_level == 3:
-        color_code = '\u001b[33m'
         log_warning(message)
     elif log_level == 4:
-        color_code = '\u001b[33m'
         log_error(message)
 
-    print(f'{color_code[0]}{timestamp}> {message}\u001b[0m')
+    print(f'{timestamp}> {message}')
 
 def info(message):
     logger.info(message)
