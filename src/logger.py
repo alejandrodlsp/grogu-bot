@@ -8,8 +8,7 @@ try:
     file = open('log/discord.log','a+')
     file.close()
 except OSError as e:
-    if e.errno != errno.EEXIST:
-        raise
+    pass
 
 logger = logging.getLogger('discord')
 

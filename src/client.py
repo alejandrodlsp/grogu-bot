@@ -26,10 +26,11 @@ class Client(commands.Bot):
         import src.events
 
         log_console("Loading cogs...", 1)
-        #for filename in os.listdir('./src/cogs'):
-        #    if filename.endswith('_cog.py'):
-        #        cog_name = filename[:-3]
-        #        self.load_extension(f'src.cogs.{cog_name}')
+        for filename in os.listdir('./src/cogs'):
+            if filename.endswith('_cog.py'):
+                cog_name = filename[:-3]
+                if not (cog_name == 'music_cog'):
+                    self.load_extension(f'src.cogs.{cog_name}')
 
     def run(self):
         self.setup()
