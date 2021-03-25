@@ -38,7 +38,7 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
         node = {
             "host": os.getenv("LAVALINK_SERVER_ADDRESS"),
             "port": os.getenv("LAVALINK_SERVER_PORT"),
-            "rest_uri": f'http://{os.getenv("LAVALINK_SERVER_ADDRESS")}:{os.getenv("LAVALINK_SERVER_PORT")}',
+            "rest_uri": f'https://{os.getenv("LAVALINK_SERVER_ADDRESS")}',
             "password": os.getenv("LAVALINK_SERVER_PASSWORD"),
             "identifier": "MAIN",
             "region": os.getenv("LAVALINK_SERVER_REGION")
