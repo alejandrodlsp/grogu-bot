@@ -7,7 +7,7 @@
     "unsufficient_permissions" : "You do not have sufficient permissions to execute this command.",
     
     "music_already_connected_to_channel_error" : "Bot is already connected to a voice channel. :exclamation:",
-    "music_queue_is_empty_error" : "Que is empty! :exclamation:",
+    "music_queue_is_empty_error" : "Queue is empty! :exclamation:",
     "music_no_voice_channel_error" : "No suitable voice channel was provided. :exclamation:",
     "music_no_available_on_dm_error" : "Music commands are not available in DMs :exclamation:",
     "music_player_already_paused_error" : "Playback is already paused :exclamation:",

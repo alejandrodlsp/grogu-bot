@@ -1,13 +1,13 @@
 import json
 
-global text_value
-text_value = None
+global __text
+__text = None
 
 def load_text():
     with open('assets/text.json') as f:
-        global text_value
-        text_value = json.load(f)
+        global __text
+        __text = json.load(f)
 
 def get_text(key):
-    global text_value
-    return text_value[key]
+    global __text
+    return __text[key]

@@ -1,22 +1,13 @@
-aliases = {
-    'ping' : [ 'latency', 'ms' ],
-    'clear' : [ 'clean', 'purge' ],
-    'kick' : [],
-    'ban' : [],
-    'unban' : [],
-    'changeprefix' : [ 'prefix', 'change_prefix' ],
-    'connect' : [ 'c' ],
-    'queue' : [ 'q' ],
-    'disconnect' : [ 'dc' ],
-    'play' : [ 'p', 'pl'],
-    'choose' : [ 'ch', 'cplay', 'cp' ],
-    'pause' : [],
-    'stop' : [ 'st' ],
-    'resume' : [ 'r' ],
-    'skip' : [ 'next', 'fs', 's' ],
-    'previous' : [ 'rewind', 'rw' ],
-    'shuffle' : [ 'sf', 'sh' ]
-}
+import json
+
+global __aliases
+__aliases = None
+
+def load_aliases():
+    with open('assets/alias.json') as f:
+        global __aliases
+        __aliases = json.load(f)
 
 def get_aliases(command):
-    return aliases[command] if command in aliases else []
+    global __aliases
+    return __aliases[command] if command in __aliases else []
