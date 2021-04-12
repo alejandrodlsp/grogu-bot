@@ -6,7 +6,8 @@ PREFIXES_FILE_PATH = 'db/prefixes.json'
 def get_prefix(client, message):
     with open(PREFIXES_FILE_PATH, 'r') as f:
         prefixes = json.load(f)
-    if (prefix := prefixes[str(message.guild.id)]) is None:
+    prefix = prefixes[str(message.guild.id)]
+    if prefix is None:
         create_prefix_entry(client.guild)
     return prefix
 

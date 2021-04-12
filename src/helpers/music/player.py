@@ -26,7 +26,8 @@ class Player(wavelink.Player):
         if self.is_connected:
             raise AlreadyConnectedToChannelError
 
-        if (channel := getattr(ctx.author.voice, "channel", channel)) is None:
+        channel = getattr(ctx.author.voice, "channel", channel)
+        if channel is None:
             raise NoVoiceChannelError
 
         await super().connect(channel.id)
@@ -48,7 +49,8 @@ class Player(wavelink.Player):
             self.queue.add(tracks[0])
             await ctx.send(get_text('music_added_single_track_to_queue').format(tracks[0].title))
         else:
-            if (track := await self.choose_track(ctx, tracks)) is not None:
+            track = await self.choose_track(ctx, tracks)
+            if track is not None:
                 self.queue.add(track)
                 await ctx.send(get_text('music_added_single_track_to_queue').format(tracks[0].title))
         if not self.is_playing:
@@ -79,7 +81,8 @@ class Player(wavelink.Player):
 
     async def advance(self):
         try:
-            if (track := self.queue.get_next_track()) is not None:
+            track = self.queue.get_next_track()
+            if track is not None:
                 await self.play(track)
         except QueueIsEmptyError:
             pass

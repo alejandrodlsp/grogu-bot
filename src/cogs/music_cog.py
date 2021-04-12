@@ -12,9 +12,9 @@ from src.helpers.music.queue import QueueIsEmptyError
 from src.helpers.music.player import Player
 from src.embeds.music.queue_embed import QueueEmbed
 
+from src.util import send_msg
 from src.alias import get_aliases
 from src.logger import log_console
-from src.text import get_text
 
 URL_REGEX = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
  
@@ -38,7 +38,7 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
         node = {
             "host": os.getenv("LAVALINK_SERVER_ADDRESS"),
             "port": os.getenv("LAVALINK_SERVER_PORT"),
-            "rest_uri": f'http://{os.getenv("LAVALINK_SERVER_ADDRESS")}:{os.getenv("LAVALINK_SERVER_PORT")}',
+            "rest_uri": f'https://{os.getenv("LAVALINK_SERVER_ADDRESS")}',
             "password": os.getenv("LAVALINK_SERVER_PASSWORD"),
             "identifier": "MAIN",
             "region": os.getenv("LAVALINK_SERVER_REGION")
@@ -73,7 +73,7 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
 
     async def cog_check(self, ctx):
         if isinstance(ctx.channel, discord.DMChannel):
-            await ctx.send(get_text("music_no_available_on_dm_error"))
+            await send_msg(ctx, 'music_no_available_on_dm_error')
             return False
         return True
 
@@ -81,14 +81,14 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
     async def connect_command(self, ctx, *, channel: t.Optional[discord.VoiceChannel]):
         player = self.get_player(ctx)
         channel = await player.connect(ctx, channel)
-        await ctx.send(get_text("music_channel_on_connect").format(channel.name))
+        await send_msg(ctx, 'music_channel_on_connect', channel.name)
 
     @connect_command.error
     async def connect_command_error(self, ctx, error):
         if isinstance(error, AlreadyConnectedToChannel):
-            await ctx.send(get_text("music_already_connected_to_channel_error"))
+            await send_msg(ctx, 'music_already_connected_to_channel_error')
         elif isinstance(error, NoVoiceChannel):
-            await ctx.send(get_text("music_no_voice_channel_error"))
+            await send_msg(ctx, 'music_no_voice_channel_error')
     
     @commands.command(name='queue', aliases=get_aliases('queue'))
     async def queue_command(self, ctx, show : t.Optional[int] = 10):
@@ -102,13 +102,13 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
     @queue_command.error
     async def queue_command_error(self, ctx, error):
         if isinstance(error, QueueIsEmpty):
-            await ctx.send(get_text("music_queue_is_empty_error"))
+            await send_msg(ctx, 'music_queue_is_empty_error')
 
     @commands.command(name='disconnect', aliases=get_aliases('disconnect'))
     async def disconnect_command(self, ctx):
         player = self.get_player(ctx)
         await player.teardown()
-        await ctx.send(get_text("music_channel_on_disconnect"))
+        await send_msg(ctx, 'music_channel_on_disconnect')
 
     @disconnect_command.error
     async def disconnect_command_error(self, ctx, error):
@@ -126,7 +126,7 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
                 raise QueueIsEmptyError
             await player.set_pause(False)
             if player.is_paused:
-                await ctx.send(get_text('music_on_resume'))
+                await send_msg(ctx, 'music_on_resume')
 
         else:
             query = query.strip("<>")
@@ -138,7 +138,7 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
     @play_command.error
     async def play_command_error(self, ctx, error):
         if isinstance(error, QueueIsEmptyError):
-            await ctx.send(get_text('music_queue_is_empty_error'))
+            await send_msg(ctx, 'music_queue_is_empty_error')
 
     @commands.command(name='pause', aliases=get_aliases('pause'))
     async def pause_command(self, ctx):
@@ -147,12 +147,12 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
         if player.is_paused:
             raise PlayerIsAlreadyPaused
         await player.set_pause(True)
-        await ctx.send(get_text('music_on_pause'))
+        await send_msg(ctx, 'music_on_pause')
 
     @pause_command.error
     async def pause_command_error(self, ctx, error):
         if isinstance(error, PlayerIsAlreadyPaused):
-            await ctx.send(get_text('music_player_already_paused_error'))
+            await send_msg(ctx, 'music_player_already_paused_error')
 
     @commands.command(name='resume', aliases=get_aliases('resume'))
     async def resume_command(self, ctx):
@@ -162,14 +162,14 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
             if player.queue.is_empty:
                 raise QueueIsEmptyError
             await player.set_pause(False)
-            await ctx.send(get_text('music_on_resume'))
+            await send_msg(ctx, 'music_on_resume')
 
     @commands.command(name='stop', aliases=get_aliases('stop'))
     async def stop_command(self, ctx):
         player = self.get_player(ctx)
         player.queue.empty()
         await player.stop()
-        await ctx.send(get_text('music_on_stop'))
+        await send_msg(ctx, 'music_on_stop')
 
     @commands.command(name='skip', aliases=get_aliases('skip'))
     async def skip_command(self, ctx):
@@ -178,14 +178,14 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
         if not player.queue.upcoming:
             raise NoMoreTracksError
         await player.stop()
-        await ctx.send(get_text('music_on_skip'))
+        await send_msg(ctx, 'music_on_skip')
 
     @skip_command.error
     async def skip_command_error(self, ctx, error):
         if isinstance(error, QueueIsEmptyError):
-            await ctx.send(get_text('music_queue_is_empty_error'))
+            await send_msg(ctx, 'music_queue_is_empty_error')
         elif isinstance(error, NoMoreTracksError):
-            await ctx.send(get_text('music_no_more_tracks_error'))
+            await send_msg(ctx, 'music_no_more_tracks_error')
 
     @commands.command(name='previous', aliases=get_aliases('previous'))
     async def previous_command(self, ctx):
@@ -197,23 +197,23 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
         player.queue.position -= 2 if player.queue.position >= 1 else 0
 
         await player.stop()
-        await ctx.send(get_text('music_on_previous'))
+        await send_msg(ctx, 'music_on_previous')
 
     @previous_command.error
     async def previous_command_error(self, ctx, error):
         if isinstance(error, NoPreviousTrackError):
-            await ctx.send(get_text('music_no_previous_track_error'))
+            await send_msg(ctx, 'music_no_previous_track_error')
 
     @commands.command(name='shuffle', aliases=get_aliases('shuffle'))
     async def shuffle_command(self, ctx):
         player = self.get_player(ctx)
-        player.queue.shuffle
-        await ctx.send(get_text('music_on_shuffle'))
+        player.queue.shuffle()
+        await send_msg(ctx, 'music_on_shuffle')
 
     @shuffle_command.error
     async def shuffle_command_error(self, ctx, error):
         if isinstance(error, QueueIsEmptyError):
-            await ctx.send(get_text('music_queue_is_empty_error'))
+            await send_msg(ctx, 'music_queue_is_empty_error')
 
 def setup(client):
     client.add_cog(Music(client))

@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from src.alias import get_aliases
 from src.logger import log_console, log
-from src.text import get_text
+from src.util import send_msg
 from src.prefix import change_prefix
 
 class Admin(commands.Cog):
@@ -20,14 +20,14 @@ class Admin(commands.Cog):
 
         log(f'User kick: {ctx.author.name}#{ctx.author.id} kicked {member_name}#{member_discriminator} in {ctx.guild} for reason: {reason}')
         await member.kick(reason=reason)
-        await ctx.send(get_text("user_kick").format(member_name, member_discriminator))
+        await send_msg(ctx, 'user_kick', member_name, member_discriminator)
 
     @kick_command.error
     async def kick_command_error(self, ctx, error):
         if(isinstance(error, commands.MissingRequiredArgument)):
             await ctx.send("Missing arguments: .kick *user*")
         if(isinstance(error, commands.MissingPermissions)):
-            await ctx.send(get_text("unsufficient_permissions"))
+            await send_msg(ctx, 'unsufficient_permissions')
 
     @commands.command(name='ban', aliases=get_aliases('ban'))
     @commands.has_permissions(ban_members=True)
@@ -36,14 +36,14 @@ class Admin(commands.Cog):
 
         log(f'User ban: {ctx.author.name}#{ctx.author.id} banned {member_name}#{member_discriminator} in {ctx.guild} for reason: {reason}')
         await member.ban(reason=reason)
-        await ctx.send(get_text("user_ban").format(member_name, member_discriminator))
+        await send_msg(ctx, 'user_ban', member_name, member_discriminator)
 
     @ban_command.error
     async def ban_command_error(self, ctx, error):
         if(isinstance(error, commands.MissingRequiredArgument)):
             await ctx.send("Missing arguments: .ban *user*")
         if(isinstance(error, commands.MissingPermissions)):
-            await ctx.send(get_text("unsufficient_permissions"))
+            await send_msg(ctx, 'unsufficient_permissions')
 
     @commands.command(name='unban', aliases=get_aliases('unban'))
     @commands.has_permissions(administrator=True)
@@ -55,7 +55,7 @@ class Admin(commands.Cog):
             user = ban_entry.user
             if (user.name, user.discriminator) == (member.name, member_discriminator):
                 await ctx.guild.unban(user)
-                await ctx.send(get_text("user_pardon").format(member_name, member_discriminator))
+                await send_msg(ctx, 'user_pardon', member_name, member_discriminator)
                 log(f'User pardon: {ctx.author.name}#{ctx.author.id} unbaned {member_name}#{member_discriminator} in {ctx.guild}')
 
     @unban_command.error
@@ -63,7 +63,7 @@ class Admin(commands.Cog):
         if(isinstance(error, commands.MissingRequiredArgument)):
             await ctx.send("Missing arguments: .unban *user*")
         if(isinstance(error, commands.MissingPermissions)):
-            await ctx.send(get_text("unsufficient_permissions"))
+            await send_msg(ctx, 'unsufficient_permissions')
 
     @commands.command(name='changeprefix', aliases=get_aliases('changeprefix'))
     @commands.has_permissions(administrator=True)
@@ -75,7 +75,7 @@ class Admin(commands.Cog):
         if(isinstance(error, commands.MissingRequiredArgument)):
             await ctx.send("Missing arguments: .changeprefix *prefix*")
         if(isinstance(error, commands.MissingPermissions)):
-            await ctx.send(get_text("unsufficient_permissions"))
+            await send_msg(ctx, 'unsufficient_permissions')
 
 def setup(client):
     client.add_cog(Admin(client))
