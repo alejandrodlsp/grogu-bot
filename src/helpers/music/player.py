@@ -77,7 +77,7 @@ class Player(wavelink.Player):
             return tracks[ChooseTrackOptions[reaction.emoji]]
 
     async def start_playback(self):
-        await self.play(self.queue.first_track)
+        await self.play(self.queue.current_track)
 
     async def advance(self):
         try:
