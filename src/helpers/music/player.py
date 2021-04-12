@@ -17,6 +17,9 @@ class NoVoiceChannelError(commands.CommandError):
 class NoTracksFoundError(commands.CommandError):
     pass
 
+class QueryNotFoundError(commands.CommandError):
+    pass
+
 class Player(wavelink.Player):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -39,7 +42,7 @@ class Player(wavelink.Player):
         except KeyError:
             pass
 
-    async def add_tracks(self, ctx, tracks):
+    async def add_tracks(self, ctx, tracks, mode):
         if not tracks:
             raise NoTracksFoundError
 
@@ -49,7 +52,13 @@ class Player(wavelink.Player):
             self.queue.add(tracks[0])
             await ctx.send(get_text('music_added_single_track_to_queue').format(tracks[0].title))
         else:
-            track = await self.choose_track(ctx, tracks)
+            if len(tracks) < 1:
+                raise QueryNotFoundError
+
+            track = tracks[0]
+            if mode == 'c':
+                track = await self.choose_track(ctx, tracks)
+                
             if track is not None:
                 self.queue.add(track)
                 await ctx.send(get_text('music_added_single_track_to_queue').format(tracks[0].title))

@@ -38,7 +38,7 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
         node = {
             "host": os.getenv("LAVALINK_SERVER_ADDRESS"),
             "port": os.getenv("LAVALINK_SERVER_PORT"),
-            "rest_uri": f'https://{os.getenv("LAVALINK_SERVER_ADDRESS")}',
+            "rest_uri": f'http://{os.getenv("LAVALINK_SERVER_ADDRESS")}:{os.getenv("LAVALINK_SERVER_PORT")}',
             "password": os.getenv("LAVALINK_SERVER_PASSWORD"),
             "identifier": "MAIN",
             "region": os.getenv("LAVALINK_SERVER_REGION")
@@ -114,8 +114,7 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
     async def disconnect_command_error(self, ctx, error):
         pass
 
-    @commands.command(name='play', aliases=get_aliases('play'))
-    async def play_command(self, ctx, *, query: t.Optional[str]):
+    async def play(self, ctx, mode, *, query: t.Optional[str]):
         player = self.get_player(ctx)
 
         if not player.is_connected:
@@ -132,11 +131,20 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
             query = query.strip("<>")
             if not re.match(URL_REGEX, query):
                 query = f"ytsearch:{query}"
-
+    
             await player.add_tracks(ctx, await self.wavelink.get_tracks(query))
+
+    @commands.command(name='play', aliases=get_aliases('play'))
+    async def play_command(self, ctx, *, query: t.Optional[str]):
+        await self.play(ctx, 'p', query)
+
+    @commands.command(name="cplay", aliases=get_aliases('cplay'))
+    async def cplay_command(self, ctx, *, query: t.Optional[str]):
+        await self.play(ctx, 'c', query)
 
     @play_command.error
     async def play_command_error(self, ctx, error):
+        await ctx.send(error)
         if isinstance(error, QueueIsEmptyError):
             await send_msg(ctx, 'music_queue_is_empty_error')
 

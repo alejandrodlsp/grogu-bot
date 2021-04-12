@@ -9,6 +9,7 @@
     "queue" : [ "q" ],
     "disconnect" : [ "dc" ],
     "play" : [ "p", "pl"],
+    "cplay" : [ "choose", "choosep", "cp" ],
     "choose" : [ "ch", "cplay", "cp" ],
     "pause" : [],
     "stop" : [ "st" ],
