@@ -26,7 +26,7 @@ class QueueEmbed:
         if upcoming:
             self.embed.add_field(
                 name= NEXT_UP_COLUMN,
-                value = "\n".join(t.title for t in upcoming[:show]),
+                value = "\n".join(t.title for t, i in upcoming[:show]),
                 inline = False
             )
 

@@ -138,19 +138,17 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
     async def play_command(self, ctx, *, query: t.Optional[str]):
         await self.play(ctx, 'p', query)
 
+    @play_command.error
+    async def play_command_error(self, ctx, error):
+        if isinstance(error, QueueIsEmptyError):
+            await send_msg(ctx, 'music_queue_is_empty_error')
+
     @commands.command(name="cplay", aliases=get_aliases('cplay'))
     async def cplay_command(self, ctx, *, query: t.Optional[str]):
         await self.play(ctx, 'c', query)
 
-    @play_command.error
-    async def play_command_error(self, ctx, error):
-        await ctx.send(error)
-        if isinstance(error, QueueIsEmptyError):
-            await send_msg(ctx, 'music_queue_is_empty_error')
-
     @cplay_command.error
     async def cplay_command_error(self, ctx, error):
-        await ctx.send(error)
         if isinstance(error, QueueIsEmptyError):
             await send_msg(ctx, 'music_queue_is_empty_error')
 
@@ -177,6 +175,11 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
                 raise QueueIsEmptyError
             await player.set_pause(False)
             await send_msg(ctx, 'music_on_resume')
+
+    @resume_command.error
+    async def resume_command_error(self, ctx, error):
+        if isinstance(error, QueueIsEmptyError):
+            await send_msg(ctx, 'music_queue_is_empty_error')
 
     @commands.command(name='stop', aliases=get_aliases('stop'))
     async def stop_command(self, ctx):
@@ -228,6 +231,14 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
     async def shuffle_command_error(self, ctx, error):
         if isinstance(error, QueueIsEmptyError):
             await send_msg(ctx, 'music_queue_is_empty_error')
+
+    @commands.command(name='remove', aliases=get_aliases('remove'))
+    async def remove_command(self, ctx, index):
+        pass
+
+    @remove_command.error
+    async def remove_command_error(self, ctx, error):
+        pass
 
 def setup(client):
     client.add_cog(Music(client))
