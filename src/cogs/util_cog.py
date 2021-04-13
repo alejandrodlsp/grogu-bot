@@ -20,6 +20,7 @@ class Util(commands.Cog):
     @commands.command(name='clear', aliases=get_aliases('clear'))
     @commands.has_permissions(manage_messages=True)
     async def clear_command(self, ctx, amount=5):
+        amount = min(amount, 20)
         await ctx.channel.purge(limit = amount)
         await delayed_message(ctx, get_text("message_cleared").format(amount), 3)
         
