@@ -21,6 +21,16 @@ Currently, the bot supports the following commands and functionality:
 
 :musical_keyboard: **Music commands** 
 - Play
+- Pause
+- Resume
+- Remove
+- Shuffle
+- Stop
+- Queue
+- Song
+- Skip
+- Previous
+- Repeat (All, one, none)
 
 :computer: **Functionality** 
 - Cycling presence messages
