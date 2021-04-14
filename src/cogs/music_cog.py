@@ -8,9 +8,10 @@ import wavelink
 
 from discord.ext import commands
 
-from src.helpers.music.queue import QueueIsEmptyError
+from src.helpers.music.queue import QueueIsEmptyError, RemoveOutOfIndexError
 from src.helpers.music.player import Player
 from src.embeds.music.queue_embed import QueueEmbed
+from src.embeds.music.current_song_embed import CurrentSongEmbed
 
 from src.util import send_msg
 from src.alias import get_aliases
@@ -94,14 +95,14 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
     async def queue_command(self, ctx, show : t.Optional[int] = 10):
         player = self.get_player(ctx)
         if player.queue.is_empty:
-            raise QueueIsEmpty
+            raise QueueIsEmptyError
 
         embed = QueueEmbed(ctx, player.queue, show)
         msg = await embed.send()
 
     @queue_command.error
     async def queue_command_error(self, ctx, error):
-        if isinstance(error, QueueIsEmpty):
+        if isinstance(error, QueueIsEmptyError):
             await send_msg(ctx, 'music_queue_is_empty_error')
 
     @commands.command(name='disconnect', aliases=get_aliases('disconnect'))
@@ -233,12 +234,25 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
             await send_msg(ctx, 'music_queue_is_empty_error')
 
     @commands.command(name='remove', aliases=get_aliases('remove'))
-    async def remove_command(self, ctx, index):
-        pass
+    async def remove_command(self, ctx, index: int):
+        player = self.get_player(ctx)
+        song = player.queue.remove(index)
+        await send_msg(ctx, "music_on_remove", song)
 
     @remove_command.error
     async def remove_command_error(self, ctx, error):
-        pass
+        if isinstance(error, RemoveOutOfIndexError):
+            await send_msg(ctx, "music_remove_out_of_index_error")
+
+    @commands.command(name='song', aliases=get_aliases('song'))
+    async def song_command(self,ctx):
+        player = self.get_player(ctx)
+        embed = CurrentSongEmbed(ctx, player.queue)
+        msg = await embed.send()
+
+    @song_command.error
+    async def song_command_error(self, ctx, error):
+        await ctx.send(error)
 
 def setup(client):
     client.add_cog(Music(client))

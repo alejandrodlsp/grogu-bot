@@ -4,6 +4,9 @@ import random
 class QueueIsEmptyError(commands.CommandError):
     pass
 
+class RemoveOutOfIndexError(commands.CommandError):
+    pass
+
 class Queue:
     def __init__(self, queue = []):
         self._queue = []
@@ -66,3 +69,8 @@ class Queue:
         upcoming = self.upcoming
         random.shuffle(upcoming)
         self._queue[position:] = upcoming
+
+    def remove(self, index: int):
+        if index > self.length or index < 0:
+            raise RemoveOutOfIndexError
+        return self._queue.pop(index)

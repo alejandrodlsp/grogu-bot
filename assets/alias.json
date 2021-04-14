@@ -16,5 +16,7 @@
     "resume" : [ "r" ],
     "skip" : [ "next", "fs", "s" ],
     "previous" : [ "rewind", "rw" ],
-    "shuffle" : [ "sf", "sh" ]
+    "shuffle" : [ "sf", "sh" ],
+    "remove": ["rm", "rem"],
+    "song": ["current"]
 }
