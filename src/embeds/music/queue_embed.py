@@ -3,7 +3,7 @@ import datetime as dt
 
 EMBED_TITLE = "Queue"
 EMBED_AUTHOR = "Query Results"
-EMBED_FOOTER = "Requested by {}"
+EMBED_FOOTER = "Requested by {}."
 NEXT_UP_COLUMN = "Next up"
 CURRENTLY_PLAYING_TAG="Currently Playing:"
 
@@ -12,7 +12,7 @@ class QueueEmbed:
         self.ctx = ctx
         self.embed = discord.Embed(
             title=EMBED_TITLE,
-            description= f'Showing up to next {show} tracks',
+            description= f'Showing up to next {show} tracks out of **{queue.length}**',
             colour=ctx.author.colour,
             timestamp=dt.datetime.utcnow()
         )
@@ -26,7 +26,7 @@ class QueueEmbed:
         if upcoming:
             self.embed.add_field(
                 name= NEXT_UP_COLUMN,
-                value = "\n".join(t.title for t, i in upcoming[:show]),
+                value = "\n".join(str(i + queue.position + 1) + ") " + t.title for i, t in enumerate(upcoming[:show])),
                 inline = False
             )
 
