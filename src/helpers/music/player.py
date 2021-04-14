@@ -95,3 +95,6 @@ class Player(wavelink.Player):
                 await self.play(track)
         except QueueIsEmptyError:
             pass
+
+    async def repeat_track(self):
+        await self.play(self.queue.current_track)

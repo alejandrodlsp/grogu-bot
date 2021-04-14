@@ -21,7 +21,11 @@ class QueueEmbed:
             text=EMBED_FOOTER.format(ctx.author.display_name), 
             icon_url=ctx.author.avatar_url
             )
-        self.embed.add_field(name=CURRENTLY_PLAYING_TAG, value = queue.current_track.title, inline=False)
+        self.embed.add_field(
+            name=CURRENTLY_PLAYING_TAG, 
+            value = getattr(queue.current_track, "title", "No tracks currently playing"),
+            inline=False
+            )
         upcoming = queue.upcoming
         if upcoming:
             self.embed.add_field(

@@ -1,13 +1,20 @@
 from discord.ext import commands
 import random
+from enum import Enum
 
 class QueueIsEmptyError(commands.CommandError):
     pass
+
+class QueueRepeatMode(Enum):
+    NONE = 0
+    ONE = 1
+    ALL = 2
 
 class Queue:
     def __init__(self):
         self._queue = []
         self.position = 0
+        self.repeat_mode = QueueRepeatMode.NONE
 
     def add(self, *args):
         self._queue.extend(args)
@@ -26,7 +33,8 @@ class Queue:
     def current_track(self):
         if not self._queue:
             raise QueueIsEmptyError
-        return self._queue[self.position]
+        if self.position <= len(self._queue) - 1:
+            return self._queue[self.position]
 
     @property
     def upcoming(self):
@@ -53,8 +61,13 @@ class Queue:
             raise QueueIsEmptyError
         self.position += 1
 
-        if self.position > len(self._queue) - 1:
+        if self.position < 0:
             return None
+        elif self.position > len(self._queue) - 1:
+            if self.repeat_mode == QueueRepeatMode.ALL:
+                self.position = 0
+            else:
+                return None
 
         return self._queue[self.position]
 
@@ -66,3 +79,12 @@ class Queue:
         random.shuffle(upcoming)
         self._queue = self._queue[:self.position + 1]
         self._queue.extend(upcoming)
+
+    def set_repeat_mode(self, mode):
+        if mode == 'NONE':
+            self.repeat_mode = QueueRepeatMode.NONE
+        elif mode == '1':
+            self.repeat_mode = QueueRepeatMode.ONE
+        elif mode == 'ALL':
+            self.repeat_mode = QueueRepeatMode.ALL
+        

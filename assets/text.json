@@ -13,14 +13,17 @@
     "music_player_already_paused_error" : "Playback is already paused :exclamation:",
     "music_no_more_tracks_error" : "No more tracks in queue :exclamation:",
     "music_no_previous_track_error" : "No previous track in queue :exclamation:",
-    "music_added_single_track_to_queue" : "Added {} to the queue. :musical_note:",
-
+    "music_invalid_repeat_mode_error" : "Invalid repeat mode, do: repeat {}",
+    
     "music_channel_on_connect" : "Connected to **{}** channel.",
     "music_channel_on_disconnect" : "Disconnected from voice channel",
+    "music_added_single_track_to_queue" : "Added {} to the queue. :musical_note:",
     "music_on_pause" : "Music Paused :pause_button:",
     "music_on_resume" : "Music Resumed :play_pause:",
     "music_on_stop" : "Music Stopped :octagonal_sign:",
     "music_on_skip" : "Playing next track in queue :track_next: ",
     "music_on_previous" : "No previous track in queue :rewind:",
-    "music_on_shuffle" : "Shuffling queue :twisted_rightwards_arrows:"
+    "music_on_shuffle" : "Shuffling queue :twisted_rightwards_arrows:",
+    "music_on_repeat" : "Repeating songs ({})"
+    
 }
