@@ -5,14 +5,18 @@ from enum import Enum
 class QueueIsEmptyError(commands.CommandError):
     pass
 
+class RemoveOutOfIndexError(commands.CommandError):
+  pass
+  
 class QueueRepeatMode(Enum):
     NONE = 0
     ONE = 1
     ALL = 2
 
 class Queue:
-    def __init__(self):
+    def __init__(self, queue = []):
         self._queue = []
+        self._queue.extend(queue)
         self.position = 0
         self.repeat_mode = QueueRepeatMode.NONE
 
@@ -77,9 +81,8 @@ class Queue:
         
         upcoming = self.upcoming
         random.shuffle(upcoming)
-        self._queue = self._queue[:self.position + 1]
-        self._queue.extend(upcoming)
-
+        self._queue[position:] = upcoming
+        
     def set_repeat_mode(self, mode):
         if mode == 'NONE':
             self.repeat_mode = QueueRepeatMode.NONE
@@ -87,4 +90,8 @@ class Queue:
             self.repeat_mode = QueueRepeatMode.ONE
         elif mode == 'ALL':
             self.repeat_mode = QueueRepeatMode.ALL
-        
+
+    def remove(self, index: int):
+        if index > self.length or index < 0:
+            raise RemoveOutOfIndexError
+        return self._queue.pop(index)
