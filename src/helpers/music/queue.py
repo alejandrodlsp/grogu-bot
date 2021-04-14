@@ -81,7 +81,7 @@ class Queue:
         
         upcoming = self.upcoming
         random.shuffle(upcoming)
-        self._queue[position:] = upcoming
+        self._queue[self.position:] = upcoming
         
     def set_repeat_mode(self, mode):
         if mode == 'NONE':
