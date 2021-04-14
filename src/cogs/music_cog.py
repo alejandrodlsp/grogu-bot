@@ -8,8 +8,8 @@ import wavelink
 
 from discord.ext import commands
 
-from src.helpers.music.queue import QueueIsEmptyError, RemoveOutOfIndexError
-from src.helpers.music.player import Player
+from src.helpers.music.queue import QueueIsEmptyError, QueueRepeatMode, RemoveOutOfIndexError
+from src.helpers.music.player import Player, NoVoiceChannelError
 from src.embeds.music.queue_embed import QueueEmbed
 from src.embeds.music.current_song_embed import CurrentSongEmbed
 
@@ -26,6 +26,9 @@ class NoMoreTracksError(commands.CommandError):
     pass
 
 class NoPreviousTrackError(commands.CommandError):
+    pass
+
+class InvalidRepeatModeError(commands.CommandError):
     pass
 
 class Music(commands.Cog, wavelink.WavelinkMixin):
@@ -70,7 +73,10 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
     @wavelink.WavelinkMixin.listener("on_track_end")
     @wavelink.WavelinkMixin.listener("on_track_exception")
     async def on_player_stop(self, node, payload):
-        await payload.player.advance()
+        if payload.player.queue.repeat_mode == QueueRepeatMode.ONE:
+            await payload.player.repeat_track()
+        else:
+            await payload.player.advance()
 
     async def cog_check(self, ctx):
         if isinstance(ctx.channel, discord.DMChannel):
@@ -143,6 +149,8 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
     async def play_command_error(self, ctx, error):
         if isinstance(error, QueueIsEmptyError):
             await send_msg(ctx, 'music_queue_is_empty_error')
+        elif isinstance(error, NoVoiceChannelError):
+            await send_msg(ctx, 'music_no_voice_channel_error')
 
     @commands.command(name="cplay", aliases=get_aliases('cplay'))
     async def cplay_command(self, ctx, *, query: t.Optional[str]):
@@ -152,6 +160,8 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
     async def cplay_command_error(self, ctx, error):
         if isinstance(error, QueueIsEmptyError):
             await send_msg(ctx, 'music_queue_is_empty_error')
+        elif isinstance(error, NoVoiceChannelError):
+            await send_msg(ctx, 'music_no_voice_channel_error')
 
     @commands.command(name='pause', aliases=get_aliases('pause'))
     async def pause_command(self, ctx):
@@ -232,6 +242,21 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
     async def shuffle_command_error(self, ctx, error):
         if isinstance(error, QueueIsEmptyError):
             await send_msg(ctx, 'music_queue_is_empty_error')
+
+    @commands.command(name='repeat', aliases=get_aliases('repeat'))
+    async def repeat_command(self, ctx, mode: str):
+        mode = mode.upper()
+        if mode not in [e.name.upper() for e in QueueRepeatMode]:
+            raise InvalidRepeatModeError
+        player = self.get_player(ctx)
+        player.queue.set_repeat_mode(mode)
+
+        await send_msg(ctx, "music_on_repeat", mode)
+
+    @repeat_command.error
+    async def repeat_command_error(self, ctx, error):
+        if isinstance(error, InvalidRepeatModeError):
+            await send_msg(ctx, 'music_invalid_repeat_mode_error', ' '.join([e.name for e in QueueRepeatMode]))
 
     @commands.command(name='remove', aliases=get_aliases('remove'))
     async def remove_command(self, ctx, index: int):
