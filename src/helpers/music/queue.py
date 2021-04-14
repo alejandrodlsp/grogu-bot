@@ -8,8 +8,9 @@ class RemoveOutOfIndexError(commands.CommandError):
     pass
 
 class Queue:
-    def __init__(self):
+    def __init__(self, queue = []):
         self._queue = []
+        self._queue.extend(queue)
         self.position = 0
 
     def add(self, *args):
@@ -67,8 +68,7 @@ class Queue:
         
         upcoming = self.upcoming
         random.shuffle(upcoming)
-        self._queue = self._queue[:self.position + 1]
-        self._queue.extend(upcoming)
+        self._queue[position:] = upcoming
 
     def remove(self, index: int):
         if index > self.length or index < 0:
