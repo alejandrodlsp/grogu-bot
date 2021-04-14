@@ -1,7 +1,7 @@
 import unittest
 from frozendict import frozendict
 
-from src.helpers.music.queue import Queue, QueueIsEmptyError
+from src.helpers.music.queue import Queue, QueueIsEmptyError, RemoveOutOfIndexError
 
 class QueueTest(unittest.TestCase):
 
@@ -72,6 +72,12 @@ class QueueTest(unittest.TestCase):
         self.assertEqual(self.q1.length, 3)
         self.assertEqual(self.q3.length, 0)
 
+    def test_repeat_mode_all(self):
+        self.q1.set_repeat_mode('ALL')
+        self.q1.position = len(self.q1._queue)
+        next_track = self.q1.get_next_track()
+        self.assertEqual(next_track['name'], QueueTest.queue1[0]['name'])
+
     def test_get_next_track(self):
         with self.assertRaises(QueueIsEmptyError):
             self.q3.get_next_track()
@@ -82,3 +88,11 @@ class QueueTest(unittest.TestCase):
         self.q1.position = len(self.q1._queue)
         next_track = self.q1.get_next_track()
         self.assertIsNone(next_track)
+
+    def test_remove(self):
+        with self.assertRaises(RemoveOutOfIndexError):
+            self.q1.remove(255)
+        with self.assertRaises(RemoveOutOfIndexError):
+            self.q1.remove(-1)
+        self.q1.remove(1)
+        self.assertEqual(self.q1._queue[1]['name'], QueueTest.queue1[2]['name'])
