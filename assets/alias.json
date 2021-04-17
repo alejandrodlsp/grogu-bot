@@ -5,7 +5,7 @@
     "ban" : [],
     "unban" : [],
     "changeprefix" : [ "prefix", "change_prefix" ],
-    "connect" : [ "c" ],
+    "connect" : [ "c" , "join", "j"],
     "queue" : [ "q" ],
     "disconnect" : [ "dc" ],
     "play" : [ "p", "pl"],
@@ -18,5 +18,18 @@
     "previous" : [ "rewind", "rw" ],
     "shuffle" : [ "sf", "sh" ],
     "remove": ["rm", "rem"],
-    "song": ["current"]
+    "song": ["current"],
+    "dice": ["rand", "random", "roll", "number"],
+    "pat": [],
+    "wink": [],
+    "dog": ["doggie"],
+    "hug": [],
+    "gay": [],
+    "glass": [],
+    "wasted": [],
+    "triggered": [],
+    "invert": [],
+    "pixelate": [],
+    "youtube": ["yt"],
+    "meme": []
 }

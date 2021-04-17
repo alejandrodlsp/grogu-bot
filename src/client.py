@@ -1,8 +1,12 @@
 import os
 import discord
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from discord.ext import commands
+from discord.ext.commands import CommandOnCooldown, CommandNotFound
 from src.logger import log_console
 from src.prefix import get_prefix
+from src.util import get_text, send_msg
+from src.db import db
 
 global client
 client = None
@@ -11,9 +15,13 @@ class Client(commands.Bot):
     def __init__(self):
         log_console("Initializing bot client...", 1)
 
+        self.scheduler = AsyncIOScheduler()
+        db.autosave(self.scheduler)
+
         super().__init__(
             command_prefix=get_prefix, 
             case_insensitive=True, 
+            owner_ids=os.getenv("OWNER_IDS").split(','),
             intents=discord.Intents.all()
             )
 
@@ -47,19 +55,25 @@ class Client(commands.Bot):
 
     async def on_connect(self):
         log_console(f'Connected to Discord (latency {self.latency * 1000:,.0f}ms).', 1)
-    
-    async def on_resume(self):
-        log_console('Bot resumed.', 2)
 
     async def on_disconnect(self):
         log_console('Bot disconnected.', 2)
 
-    async def on_ready(self):
-        self.client_id = (await self.application_info()).id
-        log_console('Bot ready', 1)
+    async def on_resume(self):
+        log_console('Bot resumed.', 2)
 
-    #async def prefix(self, bot, msg):
-    #    return commands.when_mentioned_or('.')(bot, msg)
+    async def on_command_error(self, ctx, error):
+        if isinstance(error,CommandNotFound):
+            await send_msg(ctx, "command_not_found_error")
+        elif isinstance(error, CommandOnCooldown):
+            await send_msg(ctx, "command_on_cooldown_error", int(error.retry_after))
+        elif hasattr(error, "original"):
+            if isinstance(error, discord.errors.Forbidden):
+                await send_msg(ctx, "forbidden_error")
+            else:
+                raise error.original
+        else:
+            raise error
 
     async def process_commands(self, msg):
         ctx = await self.get_context(msg, cls=commands.Context)

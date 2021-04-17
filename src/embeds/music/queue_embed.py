@@ -1,5 +1,6 @@
 import discord
 import datetime as dt
+from src.embeds.embed import Embed
 
 EMBED_TITLE = "Queue"
 EMBED_AUTHOR = "Query Results"
@@ -7,7 +8,7 @@ EMBED_FOOTER = "Requested by {}."
 NEXT_UP_COLUMN = "Next up"
 CURRENTLY_PLAYING_TAG="Currently Playing:"
 
-class QueueEmbed:
+class QueueEmbed(Embed):
     def __init__(self, ctx, queue, show):
         self.ctx = ctx
         self.embed = discord.Embed(
@@ -33,8 +34,4 @@ class QueueEmbed:
                 value = "\n".join(str(i + queue.position + 1) + ") " + t.title for i, t in enumerate(upcoming[:show])),
                 inline = False
             )
-
-    async def send(self):
-        self.msg = await self.ctx.send(embed=self.embed)
-        return self.msg
         

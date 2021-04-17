@@ -2,7 +2,7 @@ import os
 import asyncio
 from src.text import get_text
 
-delay = float(os.getenv("DELAYED_MESSAGE_DURATION"))
+delay = int(os.getenv("DELAYED_MESSAGE_DURATION"))
 
 async def delayed_message(ctx, message, delay=delay):
     message = await ctx.send(message)

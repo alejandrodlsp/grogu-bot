@@ -4,8 +4,10 @@
     "user_pardon" : "{}#{} was pardoned.",
     "message_cleared" : "{} messages cleared :kissing_heart:",
     "command_not_found_error" : "Command was not found :thinking:",
+    "command_on_cooldown_error" : "Slow down trooper! Command is on cooldown, retry after {}s",
     "unsufficient_permissions" : "You do not have sufficient permissions to execute this command.",
-    
+    "forbidden_error" : "I don't have permissions to do that :(",
+
     "music_already_connected_to_channel_error" : "Bot is already connected to a voice channel. :exclamation:",
     "music_queue_is_empty_error" : "Queue is empty! :exclamation:",
     "music_no_voice_channel_error" : "No suitable voice channel was provided. :exclamation:",
@@ -26,5 +28,7 @@
     "music_on_previous" : "No previous track in queue :rewind:",
     "music_on_shuffle" : "Shuffling queue :twisted_rightwards_arrows:",
     "music_on_repeat" : "Repeating songs ({})",
-    "music_on_remove" : "Song removed: {}"
+    "music_on_remove" : "Song removed: {}",
+
+    "fun_slap_command_message" : ":dizzy_face: :clap: {} slapped {} for {}"
 }

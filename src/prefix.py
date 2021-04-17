@@ -1,33 +1,40 @@
 import os
 import json
+from discord.ext.commands import when_mentioned_or
+from src.db import db
 
 PREFIXES_FILE_PATH = 'db/prefixes.json'
 
+
 def get_prefix(client, message):
-    with open(PREFIXES_FILE_PATH, 'r') as f:
-        prefixes = json.load(f)
-    prefix = prefixes[str(message.guild.id)]
+    prefix = db.field(
+        "SELECT prefix FROM guilds WHERE guild_id = ?;",
+        message.guild.id
+    )
     if prefix is None:
-        create_prefix_entry(client.guild)
-    return prefix
+        create_entry(message.guild.id)
+        return get_prefix(client, message)
 
-def create_prefix_entry(guild):
-    with open(PREFIXES_FILE_PATH, 'r') as f:
-        prefixes = json.load(f)
-    prefixes[str(guild.id)] = os.getenv("COMMAND_PREFIX")
-    with open(PREFIXES_FILE_PATH, 'w') as f:
-        json.dump(prefixes, f, indent = 4)
+    return when_mentioned_or(prefix)(client, message)
 
-def remove_prefix_entry(guild):
-    with open(PREFIXES_FILE_PATH, 'r') as f:
-        prefixes = json.load(f)
-    prefixes.pop(str(guild.id))
-    with open(PREFIXES_FILE_PATH, 'w') as f:
-        json.dump(prefixes, f, indent = 4)
 
 def change_prefix(ctx, prefix):
-    with open(PREFIXES_FILE_PATH, 'r') as f:
-        prefixes = json.load(f)
-    prefixes[str(ctx.guild.id)] = prefix
-    with open(PREFIXES_FILE_PATH, 'w') as f:
-        json.dump(prefixes, f, indent = 4)
+    db.execute(
+        "UPDATE Guilds SET prefix = ? WHERE guild_id = ?;",
+        prefix, ctx.guild.id
+    )
+
+
+def create_entry(guild_id):
+    db.execute(
+        "INSERT INTO Guilds (guild_id, prefix) VALUES (?, ?);",
+        guild_id,
+        os.getenv("COMMAND_PREFIX")
+    )
+
+
+def remove_entry(guild_id):
+    db.execute(
+        "DELETE FROM Guilds WHERE guild_id = ?;",
+        guild_id
+    )

@@ -1,5 +1,6 @@
 import discord
 import datetime as dt
+from src.embeds.embed import Embed
 
 EMBED_TITLE = "Choose a song"
 EMBED_AUTHOR = "Query Results"
@@ -13,7 +14,7 @@ ChooseTrackOptions = {
     "5⃣": 4,
 }
 
-class ChooseTrackEmbed:
+class ChooseTrackEmbed(Embed):
     def __init__(self, ctx, tracks):
         self.ctx = ctx
         self.tracks = tracks
@@ -33,12 +34,4 @@ class ChooseTrackEmbed:
             text=EMBED_FOOTER.format(ctx.author.display_name), 
             icon_url=ctx.author.avatar_url
             )
-    
-    async def send(self):
-        self.msg = await self.ctx.send(embed=self.embed)
-
-        for emoji in list(ChooseTrackOptions.keys())[:min(len(self.tracks), len(ChooseTrackOptions))]:
-            await self.msg.add_reaction(emoji)
-
-        return self.msg
         

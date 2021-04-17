@@ -5,6 +5,7 @@ from src.logger import log_console
 from src.text import get_text
 from src.util import delayed_message, send_msg
 
+
 class Util(commands.Cog):
     def __init__(self, client):
         self.client = client
@@ -21,13 +22,14 @@ class Util(commands.Cog):
     @commands.has_permissions(manage_messages=True)
     async def clear_command(self, ctx, amount=5):
         amount = min(amount, 20)
-        await ctx.channel.purge(limit = amount)
+        await ctx.channel.purge(limit=amount)
         await delayed_message(ctx, get_text("message_cleared").format(amount), 3)
-        
+
     @clear_command.error
     async def clear_command_error(self, ctx, error):
         if(isinstance(error, commands.MissingPermissions)):
             await send_msg(ctx, 'unsufficient_permissions')
+
 
 def setup(client):
     client.add_cog(Util(client))
