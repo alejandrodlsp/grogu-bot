@@ -31,10 +31,3 @@ def create_entry(guild_id):
         guild_id,
         os.getenv("COMMAND_PREFIX")
     )
-
-
-def remove_entry(guild_id):
-    db.execute(
-        "DELETE FROM Guilds WHERE guild_id = ?;",
-        guild_id
-    )

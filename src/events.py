@@ -4,7 +4,6 @@ from discord.ext import commands
 from src.util import send_msg
 from src.logger import log, log_console
 from src.client import client
-from src.prefix import create_entry, remove_entry
 
 log_console("Registering events...")
 
@@ -36,9 +35,16 @@ async def on_member_leave(member):
 
 @client.event
 async def on_guild_join(guild):
-    create_entry(guild.id)
+    db.execute(
+        "INSERT INTO Guilds (guild_id, prefix) VALUES (?, ?);",
+        guild.id,
+        os.getenv("COMMAND_PREFIX")
+    )
 
 
 @client.event
 async def on_guild_remove(guild):
-    remove_entry(guild.id)
+    db.execute(
+        "DELETE FROM Guilds WHERE guild_id = ?;",
+        guild.id
+    )

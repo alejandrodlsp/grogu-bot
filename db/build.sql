@@ -1,11 +1,3 @@
-CREATE TABLE IF NOT EXISTS meme_channels (
-    channel_id integer PRIMARY_KEY,
-    guild_id integer NOT NULL,
-    active BOOLEAN DEFAULT 1 CHECK (active IN (0, 1)),
-
-    FOREIGN KEY (guild_id) REFERENCES guilds(guild_id)
-);
-
 CREATE TABLE IF NOT EXISTS welcome_message (
     guild_id integer PRIMARY_KEY,
 
@@ -19,7 +11,11 @@ CREATE TABLE IF NOT EXISTS welcome_message (
 CREATE TABLE IF NOT EXISTS guilds (
     guild_id integer PRIMARY KEY,
     prefix text DEFAULT ">",
-    default_role integer
+    default_role integer,
+    member_log_channel integer DEFAULT 0,
+    admin_log_channel integer DEFAULT 0,
+    message_log_channel integer DEFAULT 0,
+    meme_channel integer DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS experience (
