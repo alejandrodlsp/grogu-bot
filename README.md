@@ -42,9 +42,9 @@ Currently, the bot supports the following commands and functionality:
 
 These are the main features that I aim to intruduce in the following future:
 
-- Music support
+- ~~Music support~~
 - Spotify playlists
-- Meme generation
+- ~~Meme generation~~
 - Digital currency
 
 <hr/>
