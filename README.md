@@ -1,4 +1,4 @@
-# Razer bot <img align="right" src="https://upload.wikimedia.org/wikipedia/en/thumb/4/47/RazerComms_icon.svg/1200px-RazerComms_icon.svg.png" alt="drawing" width="200"/>
+# Grogu bot <img align="right" src="https://github.com/alejandrodlsp/razer-bot/blob/main/assets/avatar-circle.png?raw=true" alt="drawing" width="200"/>
 ### Open source discord bot made using *discord.py*
 
 <hr/>
