@@ -1,9 +1,9 @@
 import discord
+from typing import Optional
 from discord.ext import commands
 from discord.utils import get
 from src.alias import get_aliases
 from src.logger import log_console
-from typing import Optional
 from src.helpers.help.help_helper import show_command_help, show_commands_help
 from src.client import client
 
@@ -19,7 +19,9 @@ class Help(commands.Cog):
 
     @commands.command(name="help", aliases=get_aliases("help"))
     async def help_command(self, ctx, cmd: Optional[str]):
-        """Shows this help message."""
+        """
+        Shows this help message.
+        """
 
         if cmd is None:
             global client

@@ -16,11 +16,19 @@ class Util(commands.Cog):
 
     @commands.command(name='ping', liases=get_aliases('ping'))
     async def ping_command(self, ctx):
+        """
+        Pings server for latency
+        """
+
         await ctx.send(f'Latency: {round(client.latency * 1000)}ms')
 
     @commands.command(name='clear', aliases=get_aliases('clear'))
     @commands.has_permissions(manage_messages=True)
     async def clear_command(self, ctx, amount=5):
+        """
+        Clears an specified amout of messages in the current chat
+        """
+
         amount = min(amount, 20)
         await ctx.channel.purge(limit=amount)
         await delayed_message(ctx, get_text("message_cleared").format(amount), 3)
