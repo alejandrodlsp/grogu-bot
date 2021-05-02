@@ -76,13 +76,6 @@ To run the bot, first you will need to run the **audio server**, to do this you 
 java -jar audio_server/Lavalink.jar
 ```
 
-You can then activate the virtual environment using
-
-```shell
-source env/bin/activate
-```
-on mac and linux.
-
 Finally, to run the bot client:
 
 ```shell
