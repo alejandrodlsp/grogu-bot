@@ -1,4 +1,4 @@
-# Razer bot <img align="right" src="https://upload.wikimedia.org/wikipedia/en/thumb/4/47/RazerComms_icon.svg/1200px-RazerComms_icon.svg.png" alt="drawing" width="200"/>
+# Grogu bot <img align="right" src="https://github.com/alejandrodlsp/razer-bot/blob/main/assets/avatar-circle.png?raw=true" alt="drawing" width="200"/>
 ### Open source discord bot made using *discord.py*
 
 <hr/>
@@ -42,9 +42,9 @@ Currently, the bot supports the following commands and functionality:
 
 These are the main features that I aim to intruduce in the following future:
 
-- Music support
+- ~~Music support~~
 - Spotify playlists
-- Meme generation
+- ~~Meme generation~~
 - Digital currency
 
 <hr/>
@@ -75,13 +75,6 @@ To run the bot, first you will need to run the **audio server**, to do this you 
 ```shell
 java -jar audio_server/Lavalink.jar
 ```
-
-You can then activate the virtual environment using
-
-```shell
-source env/bin/activate
-```
-on mac and linux.
 
 Finally, to run the bot client:
 
