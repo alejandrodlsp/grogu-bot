@@ -30,5 +30,12 @@
     "triggered": [],
     "pixelate": [],
     "youtube": ["yt"],
-    "meme": []
+    "meme": [],
+    "userinfo" : [],
+    "serverinfo" : [],
+    "poll": [],
+    "polladd": ["apoll"],
+    "pollremove": ["rpoll"],
+    "pollstop": ["pollend", "epoll"],
+    "pollstart": ["spoll"]
 }

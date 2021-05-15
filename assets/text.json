@@ -30,5 +30,11 @@
     "music_on_repeat" : "Repeating songs ({})",
     "music_on_remove" : "Song removed: {}",
 
-    "fun_slap_command_message" : ":dizzy_face: :clap: {} slapped {} for {}"
+    "fun_slap_command_message" : ":dizzy_face: :clap: {} slapped {} for {}",
+
+    "poll_already_exist_error" : "Another poll is already active in this channel!",
+    "poll_max_answers_error" : "You can only supply a maximum of 10 options.",
+    "poll_remove_error" : "No active poll in current channel",
+    "poll_add_error" : "No active poll in current channel",
+    "poll_finish_results" : "The results are in and option {} was the most popular with {} votes. Winner: :confetti_ball: **{}** :confetti_ball: "
 }
