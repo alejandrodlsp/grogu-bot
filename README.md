@@ -1,5 +1,5 @@
 # Grogu bot <img align="right" src="https://github.com/alejandrodlsp/razer-bot/blob/main/assets/avatar-circle.png?raw=true" alt="drawing" width="200"/>
-### Open source discord bot made using *discord.py*
+### Discord bot made using *discord.py*
 
 <hr/>
 <br>
